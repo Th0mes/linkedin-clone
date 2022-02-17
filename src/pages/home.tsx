@@ -8,10 +8,14 @@ import {
 	MdBusinessCenter,
 	MdArrowForwardIos,
 } from 'react-icons/md';
+import Head from 'next/head';
 
 const Home: React.FC<NextPage> = () => {
 	return (
 		<div className="space-y-10">
+			<Head>
+				<title>LinkedIn</title>
+			</Head>
 			<header className="flex justify-around items-center py-4 max-w-screen-2xl mx-auto">
 				<div className="relative w-36 h-10">
 					<Image
