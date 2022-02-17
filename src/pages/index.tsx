@@ -1,7 +1,13 @@
 import type { NextPage } from 'next';
+import { signOut } from 'next-auth/react';
 import Head from 'next/head';
 
-const Home: React.FC<NextPage> = () => {
+type HomeProps = NextPage & {
+	option: any;
+	event: any;
+};
+
+const Home: React.FC<HomeProps> = ({ option, event }) => {
 	return (
 		<div>
 			<Head>
@@ -9,7 +15,7 @@ const Home: React.FC<NextPage> = () => {
 				<meta name="description" content="LinkedIn Clone" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			LinkedIn Clone
+			<button onClick={signOut}>Sign Out</button>
 		</div>
 	);
 };

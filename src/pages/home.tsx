@@ -1,6 +1,12 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
+import type { Provider } from 'next-auth/providers';
+import type { Session } from 'next-auth';
+import Head from 'next/head';
 import Image from 'next/image';
+import { useSession, getSession, getProviders, signIn } from 'next-auth/react';
+
 import HeaderLink from 'src/components/HeaderLink';
+
 import {
 	MdExplore,
 	MdGroup,
@@ -8,9 +14,15 @@ import {
 	MdBusinessCenter,
 	MdArrowForwardIos,
 } from 'react-icons/md';
-import Head from 'next/head';
 
-const Home: React.FC<NextPage> = () => {
+type HomeType = NextPage & {
+	providers: Provider;
+};
+
+const Home: React.FC<HomeType> = ({ providers }) => {
+	const { data: session, status } = useSession();
+	const loading = status === 'loading';
+
 	return (
 		<div className="space-y-10">
 			<Head>
@@ -32,11 +44,18 @@ const Home: React.FC<NextPage> = () => {
 						<HeaderLink Icon={MdOndemandVideo} text="Learning" />
 						<HeaderLink Icon={MdBusinessCenter} text="Jobs" />
 					</div>
-					<div className="pl-4">
-						<button className="text-blue-700 font-semibold rounded-full border-2 border-blue-700 px-5 py-1.5 transition-all hover:bg-blue-700 hover:text-white">
-							Sign In
-						</button>
-					</div>
+					{Object.values(providers).map(({ name, id }) => (
+						<div key={name}>
+							<div className="pl-4">
+								<button
+									className="text-blue-700 font-semibold rounded-full border border-blue-700 px-5 py-1.5 transition-all hover:border-2"
+									onClick={() => signIn(id, { callbackUrl: '/' })}
+								>
+									Sign in
+								</button>
+							</div>
+						</div>
+					))}
 				</div>
 			</header>
 			<main className="flex flex-col xl:flex-row justify-between items-center max-w-screen-2xl mx-auto">
@@ -69,4 +88,18 @@ const Home: React.FC<NextPage> = () => {
 
 export default Home;
 
-// 1:03:01
+type serverSideProps = {
+	session: Session | null;
+	providers: Provider | unknown;
+};
+
+export const getServerSideProps: GetServerSideProps<serverSideProps> = async (
+	context
+) => {
+	return {
+		props: {
+			session: await getSession(context),
+			providers: await getProviders(),
+		},
+	};
+};

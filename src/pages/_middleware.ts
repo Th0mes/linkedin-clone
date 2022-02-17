@@ -5,7 +5,7 @@ export async function middleware(req: any) {
 	if (req.nextUrl.pathname === '/') {
 		const session = await getToken({
 			req,
-			secret: process.env.JWT_SECRET,
+			secret: process.env.SECRET,
 			secureCookie: process.env.NODE_ENV === 'production',
 		});
 		// You could also check for any property on the session object,
